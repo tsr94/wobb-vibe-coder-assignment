@@ -3,8 +3,8 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import type { FullUserProfile, ProfileDetailResponse } from "@/types";
-
 import { loadProfileByUsername } from "@/utils/profileLoader";
+import { useListStore } from "@/store/useListStore";
 
 function formatFollowersDetail(count: number) {
   if (count >= 1000000) return (count / 1000000).toFixed(2) + "M";
@@ -20,6 +20,7 @@ export function ProfileDetailPage() {
     null
   );
   const [loaded, setLoaded] = useState(false);
+  const { addProfile, removeProfile, isInList } = useListStore();
 
   useEffect(() => {
     if (!username) return;
@@ -148,13 +149,22 @@ export function ProfileDetailPage() {
             </a>
           )}
 
-          {/* TODO: candidates must implement Add to List feature */}
-          {/* TODO: candidates must implement Add to List feature */}
+          {/* Add to List */}
           <button
-            disabled
-            className="block mt-4 px-4 py-2 bg-gray-300 text-gray-500 rounded cursor-not-allowed"
+            onClick={() => {
+              if (isInList(user.user_id)) {
+                removeProfile(user.user_id);
+              } else {
+                addProfile(user);
+              }
+            }}
+            className={`block mt-4 px-4 py-2 rounded transition-colors ${
+              isInList(user.user_id)
+                ? "bg-red-100 text-red-600 hover:bg-red-200"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
           >
-            Add to List
+            {isInList(user.user_id) ? "Remove from List" : "Add to List"}
           </button>
         </div>
       </div>
