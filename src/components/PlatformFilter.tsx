@@ -1,6 +1,30 @@
 import type { Platform } from "@/types";
 import { PLATFORMS, getPlatformLabel } from "@/utils/dataHelpers";
 
+const PLATFORM_COLORS: Record<Platform, { color: string; bg: string; glow: string }> = {
+  instagram: {
+    color: "#e1306c",
+    bg: "rgba(225,48,108,0.12)",
+    glow: "rgba(225,48,108,0.3)",
+  },
+  youtube: {
+    color: "#ff4444",
+    bg: "rgba(255,68,68,0.12)",
+    glow: "rgba(255,68,68,0.3)",
+  },
+  tiktok: {
+    color: "#69c9d0",
+    bg: "rgba(105,201,208,0.12)",
+    glow: "rgba(105,201,208,0.3)",
+  },
+};
+
+const PLATFORM_ICONS: Record<Platform, string> = {
+  instagram: "📸",
+  youtube: "▶",
+  tiktok: "♪",
+};
+
 interface PlatformFilterProps {
   selected: Platform;
   onChange: (platform: Platform) => void;
@@ -14,29 +38,152 @@ export function PlatformFilter({
   searchQuery,
   onSearchChange,
 }: PlatformFilterProps) {
+  const palette = PLATFORM_COLORS[selected];
+
   return (
-    <div className="mb-4">
-      <div className="flex gap-2 justify-center mb-3">
-        {PLATFORMS.map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => onChange(p)}
-            className={`px-4 py-2 border rounded ${
-              selected === p ? "bg-gray-800 text-white" : "bg-white text-gray-800"
-            }`}
-          >
-            {getPlatformLabel(p)}
-          </button>
-        ))}
+    <div style={{ marginBottom: 28 }}>
+      {/* Platform Tabs */}
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          justifyContent: "center",
+          marginBottom: 20,
+          flexWrap: "wrap",
+        }}
+      >
+        {PLATFORMS.map((p) => {
+          const isActive = selected === p;
+          const c = PLATFORM_COLORS[p];
+          return (
+            <button
+              key={p}
+              id={`platform-tab-${p}`}
+              type="button"
+              onClick={() => onChange(p)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 22px",
+                borderRadius: 99,
+                border: "1px solid",
+                borderColor: isActive ? "transparent" : "var(--border)",
+                background: isActive ? c.bg : "var(--bg-card)",
+                color: isActive ? c.color : "var(--text-secondary)",
+                fontWeight: isActive ? 700 : 500,
+                fontSize: 14,
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                boxShadow: isActive ? `0 0 16px ${c.glow}` : "none",
+                fontFamily: "var(--font-sans)",
+                letterSpacing: "0.01em",
+                transform: isActive ? "scale(1.03)" : "scale(1)",
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = c.color + "55";
+                  (e.currentTarget as HTMLButtonElement).style.color = c.color;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
+                  (e.currentTarget as HTMLButtonElement).style.color = "var(--text-secondary)";
+                }
+              }}
+            >
+              <span style={{ fontSize: 16 }}>{PLATFORM_ICONS[p]}</span>
+              {getPlatformLabel(p)}
+            </button>
+          );
+        })}
       </div>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => onSearchChange(e.target.value)}
-        placeholder="Search by username or name..."
-        className="w-full max-w-md border px-3 py-2 rounded"
-      />
+
+      {/* Search Bar */}
+      <div
+        style={{
+          position: "relative",
+          maxWidth: 560,
+          margin: "0 auto",
+        }}
+      >
+        {/* Search icon */}
+        <span
+          style={{
+            position: "absolute",
+            left: 18,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--text-muted)",
+            fontSize: 18,
+            pointerEvents: "none",
+            lineHeight: 1,
+          }}
+        >
+          ⌕
+        </span>
+        <input
+          id="influencer-search-input"
+          type="text"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder={`Search ${getPlatformLabel(selected)} creators by name or handle…`}
+          style={{
+            width: "100%",
+            padding: "14px 18px 14px 48px",
+            background: "var(--bg-input)",
+            border: "1px solid",
+            borderColor: searchQuery ? palette.color + "66" : "var(--border)",
+            borderRadius: 14,
+            color: "var(--text-primary)",
+            fontSize: 15,
+            fontFamily: "var(--font-sans)",
+            outline: "none",
+            transition: "all 0.2s ease",
+            boxShadow: searchQuery ? `0 0 0 3px ${palette.glow}` : "none",
+          }}
+          onFocus={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = palette.color + "99";
+            (e.target as HTMLInputElement).style.boxShadow = `0 0 0 3px ${palette.glow}`;
+          }}
+          onBlur={(e) => {
+            if (!searchQuery) {
+              (e.target as HTMLInputElement).style.borderColor = "var(--border)";
+              (e.target as HTMLInputElement).style.boxShadow = "none";
+            }
+          }}
+        />
+        {/* Clear button */}
+        {searchQuery && (
+          <button
+            onClick={() => onSearchChange("")}
+            style={{
+              position: "absolute",
+              right: 14,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "var(--bg-card)",
+              border: "none",
+              borderRadius: "50%",
+              width: 24,
+              height: 24,
+              cursor: "pointer",
+              color: "var(--text-muted)",
+              fontSize: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 0,
+              lineHeight: 1,
+              transition: "color 0.15s",
+            }}
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
+      </div>
     </div>
   );
 }

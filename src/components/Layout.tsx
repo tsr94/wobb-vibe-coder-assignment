@@ -14,33 +14,168 @@ export function Layout({ children, title }: LayoutProps) {
   const count = useListStore((s) => s.selectedProfiles.length);
 
   return (
-    <div className="p-4 min-h-screen">
-      <header className="mb-6 border-b pb-4 flex items-center justify-between">
-        <div>
-          <Link to="/" className="text-xl font-semibold text-gray-900">
-            Influencer Search
-          </Link>
-          {title && <h1 className="text-2xl mt-2">{title}</h1>}
-        </div>
-
-        <button
-          onClick={() => setDrawerOpen(true)}
-          aria-label="Open selected list"
-          className="relative flex items-center gap-2 px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+    <div style={{ minHeight: "100svh", display: "flex", flexDirection: "column" }}>
+      {/* ── Navigation ── */}
+      <header
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 30,
+          background: "rgba(13,15,24,0.85)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          borderBottom: "1px solid var(--border)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            padding: "0 24px",
+            height: 64,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          My List
-          {count > 0 && (
-            <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-              {count}
+          {/* Logo */}
+          <Link
+            to="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              textDecoration: "none",
+            }}
+          >
+            <span
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 16,
+                boxShadow: "0 0 16px rgba(139,92,246,0.4)",
+              }}
+            >
+              ✦
             </span>
-          )}
-        </button>
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: 18,
+                color: "var(--text-primary)",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Wobb
+            </span>
+          </Link>
+
+          {/* My List Button */}
+          <button
+            id="open-list-drawer"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open selected list"
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 20px",
+              background: count > 0
+                ? "linear-gradient(135deg, #8b5cf6, #6d28d9)"
+                : "var(--bg-card)",
+              border: "1px solid",
+              borderColor: count > 0 ? "transparent" : "var(--border)",
+              borderRadius: 99,
+              color: "var(--text-primary)",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: count > 0 ? "var(--shadow-glow)" : "none",
+              fontFamily: "var(--font-sans)",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
+            }}
+          >
+            <span style={{ fontSize: 15 }}>♡</span>
+            My List
+            {count > 0 && (
+              <span
+                style={{
+                  background: "#fff",
+                  color: "#7c3aed",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {count}
+              </span>
+            )}
+          </button>
+        </div>
       </header>
 
-      <main>{children}</main>
+      {/* Page title bar (only shown when title prop is passed) */}
+      {title && (
+        <div
+          style={{
+            borderBottom: "1px solid var(--border)",
+            background: "var(--bg-surface)",
+            padding: "20px 24px",
+          }}
+        >
+          <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+            <h1
+              style={{
+                fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                fontWeight: 700,
+                margin: 0,
+                color: "var(--text-primary)",
+              }}
+            >
+              {title}
+            </h1>
+          </div>
+        </div>
+      )}
+
+      {/* Main content */}
+      <main style={{ flex: 1 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+          {children}
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer
+        style={{
+          borderTop: "1px solid var(--border)",
+          padding: "20px 24px",
+          textAlign: "center",
+          color: "var(--text-muted)",
+          fontSize: 13,
+        }}
+      >
+        © 2026 Wobb · Influencer Discovery Platform
+      </footer>
 
       <ListDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </div>
   );
 }
-
