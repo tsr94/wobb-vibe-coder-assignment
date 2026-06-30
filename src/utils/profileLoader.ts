@@ -1,6 +1,6 @@
 import type { ProfileDetailResponse } from "@/types";
 
-const profileModules = import.meta.glob<ProfileDetailResponse>(
+const profileModules = import.meta.glob<{ default: ProfileDetailResponse }>(
   "../assets/data/profiles/*.json"
 );
 
@@ -15,7 +15,5 @@ export async function loadProfileByUsername(
   }
 
   const result = await loader();
-  const data =
-    (result as { default?: ProfileDetailResponse }).default ?? result;
-  return data as ProfileDetailResponse;
+  return result.default;
 }
