@@ -2,6 +2,7 @@ import instagramData from "@/assets/data/search/instagram.json";
 import youtubeData from "@/assets/data/search/youtube.json";
 import tiktokData from "@/assets/data/search/tiktok.json";
 import type { Platform, SearchData, UserProfileSummary } from "@/types";
+import { PLATFORM_LABELS } from "@/types";
 
 const platformData: Record<Platform, SearchData> = {
   instagram: instagramData as SearchData,
@@ -35,7 +36,5 @@ export function filterProfiles(
 export const PLATFORMS: Platform[] = ["instagram", "youtube", "tiktok"];
 
 export function getPlatformLabel(platform: Platform): string {
-  if (platform === "instagram") return "Instagram";
-  if (platform === "youtube") return "YouTube";
-  return "TikTok";
+  return PLATFORM_LABELS[platform];
 }

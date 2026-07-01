@@ -12,9 +12,6 @@ export function SearchPage() {
   const allProfiles = extractProfiles(platform);
   const filtered = filterProfiles(allProfiles, searchQuery);
 
-  const handleProfileClick = (_username: string) => {
-    // navigation handled inside ProfileCard
-  };
 
   return (
     <Layout>
@@ -126,7 +123,6 @@ export function SearchPage() {
         profiles={filtered}
         platform={platform}
         searchQuery={searchQuery}
-        onProfileClick={handleProfileClick}
       />
     </Layout>
   );

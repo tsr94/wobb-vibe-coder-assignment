@@ -1,3 +1,5 @@
+import { Check } from "lucide-react";
+
 interface VerifiedBadgeProps {
   verified: boolean;
 }
@@ -15,14 +17,12 @@ export function VerifiedBadge({ verified }: VerifiedBadgeProps) {
         height: 18,
         background: "#1d9bf0",
         borderRadius: "50%",
-        fontSize: 10,
-        fontWeight: 800,
         color: "#fff",
         marginLeft: 6,
         flexShrink: 0,
       }}
     >
-      ✓
+      <Check size={10} strokeWidth={3} />
     </span>
   );
 }

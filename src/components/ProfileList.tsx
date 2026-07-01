@@ -1,43 +1,26 @@
 import type { Platform, UserProfileSummary } from "@/types";
 import { ProfileCard } from "./ProfileCard";
+import { EmptyState } from "./ui/EmptyState";
+import { SearchX } from "lucide-react";
 
 interface ProfileListProps {
   profiles: UserProfileSummary[];
   platform: Platform;
   searchQuery: string;
-  onProfileClick: (username: string) => void;
 }
 
 export function ProfileList({
   profiles,
   platform,
   searchQuery,
-  onProfileClick,
 }: ProfileListProps) {
   if (profiles.length === 0) {
     return (
-      <div
-        style={{
-          textAlign: "center",
-          padding: "80px 24px",
-          color: "var(--text-muted)",
-        }}
-      >
-        <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
-        <p
-          style={{
-            fontSize: 16,
-            fontWeight: 600,
-            color: "var(--text-secondary)",
-            marginBottom: 8,
-          }}
-        >
-          No creators found
-        </p>
-        <p style={{ fontSize: 14, color: "var(--text-muted)" }}>
-          Try a different search term or switch platform
-        </p>
-      </div>
+      <EmptyState
+        icon={<SearchX size={48} strokeWidth={1} />}
+        title="No creators found"
+        message="Try a different search term or switch platform"
+      />
     );
   }
 
@@ -56,7 +39,6 @@ export function ProfileList({
           profile={profile}
           platform={platform}
           searchQuery={searchQuery}
-          onProfileClick={onProfileClick}
         />
       ))}
     </div>

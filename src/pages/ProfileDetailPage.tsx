@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
-import type { FullUserProfile, ProfileDetailResponse } from "@/types";
-import { loadProfileByUsername } from "@/utils/profileLoader";
 import { useListStore } from "@/store/useListStore";
 import { ArrowLeft, Check, Heart, X, ExternalLink } from "lucide-react";
-
-function fmt(count: number) {
-  if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + "M";
-  if (count >= 1_000) return (count / 1_000).toFixed(1) + "K";
-  return String(count);
-}
+import { useProfileData } from "@/hooks/useProfileData";
+import { formatCount } from "@/utils/formatters";
 
 interface StatCardProps {
   label: string;
@@ -68,17 +61,8 @@ export function ProfileDetailPage() {
   const { username } = useParams<{ username: string }>();
   const [searchParams] = useSearchParams();
   const platform = searchParams.get("platform") || "unknown";
-  const [profileData, setProfileData] = useState<ProfileDetailResponse | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const { profile: user, loading, notFound } = useProfileData(username);
   const { addProfile, removeProfile, isInList } = useListStore();
-
-  useEffect(() => {
-    if (!username) return;
-    loadProfileByUsername(username).then((data) => {
-      setProfileData(data);
-      setLoaded(true);
-    });
-  }, [username]);
 
   if (!username) {
     return (
@@ -89,7 +73,7 @@ export function ProfileDetailPage() {
     );
   }
 
-  if (!loaded) {
+  if (loading) {
     return (
       <Layout>
         <div
@@ -117,7 +101,7 @@ export function ProfileDetailPage() {
     );
   }
 
-  if (!profileData) {
+  if (notFound || !user) {
     return (
       <Layout>
         <div style={{ textAlign: "center", padding: "80px 24px" }}>
@@ -147,7 +131,6 @@ export function ProfileDetailPage() {
     );
   }
 
-  const user: FullUserProfile = profileData.data.user_profile;
   const inList = isInList(user.user_id);
 
   return (
@@ -288,7 +271,7 @@ export function ProfileDetailPage() {
               id={`detail-add-to-list-${user.user_id}`}
               onClick={() => {
                 if (inList) removeProfile(user.user_id);
-                else addProfile(user);
+                else addProfile(user as Parameters<typeof addProfile>[0]);
               }}
               style={{
                 padding: "10px 24px",
@@ -365,7 +348,7 @@ export function ProfileDetailPage() {
       >
         <StatCard
           label="Followers"
-          value={fmt(user.followers)}
+          value={formatCount(user.followers)}
           accent="var(--accent-bright)"
         />
         {user.engagement_rate !== undefined && (
@@ -378,7 +361,7 @@ export function ProfileDetailPage() {
         {user.engagements !== undefined && (
           <StatCard
             label="Engagements"
-            value={fmt(user.engagements)}
+            value={formatCount(user.engagements)}
             accent="#60a5fa"
           />
         )}
@@ -392,7 +375,7 @@ export function ProfileDetailPage() {
         {user.avg_likes !== undefined && (
           <StatCard
             label="Avg Likes"
-            value={fmt(user.avg_likes)}
+            value={formatCount(user.avg_likes)}
             accent="#f472b6"
           />
         )}
@@ -406,7 +389,7 @@ export function ProfileDetailPage() {
         {user.avg_views !== undefined && user.avg_views > 0 && (
           <StatCard
             label="Avg Views"
-            value={fmt(user.avg_views)}
+            value={formatCount(user.avg_views)}
             accent="#38bdf8"
           />
         )}

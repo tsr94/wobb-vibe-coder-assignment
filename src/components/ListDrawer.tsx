@@ -1,17 +1,14 @@
 import { useListStore } from "@/store/useListStore";
 import { useNavigate } from "react-router-dom";
 import { X, Heart } from "lucide-react";
+import { EmptyState } from "./ui/EmptyState";
+import { formatFollowers } from "@/utils/formatters";
 
 interface ListDrawerProps {
   open: boolean;
   onClose: () => void;
 }
 
-function fmt(count: number) {
-  if (count >= 1_000_000) return (count / 1_000_000).toFixed(1) + "M";
-  if (count >= 1_000) return (count / 1_000).toFixed(0) + "K";
-  return String(count);
-}
 
 export function ListDrawer({ open, onClose }: ListDrawerProps) {
   const { selectedProfiles, removeProfile, clearList } = useListStore();
@@ -133,30 +130,11 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
           }}
         >
           {selectedProfiles.length === 0 ? (
-            <div
-              style={{
-                textAlign: "center",
-                paddingTop: 80,
-                color: "var(--text-muted)",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 16, color: "var(--text-muted)" }}>
-                <Heart size={48} strokeWidth={1} />
-              </div>
-              <p
-                style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: "var(--text-secondary)",
-                  marginBottom: 8,
-                }}
-              >
-                Your list is empty
-              </p>
-              <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.6 }}>
-                Click "+ Add" on any profile card to start building your influencer list.
-              </p>
-            </div>
+            <EmptyState
+            icon={<Heart size={48} strokeWidth={1} />}
+            title="Your list is empty"
+            message='Click "+ Add" on any profile card to start building your influencer list.'
+          />
           ) : (
             <ul
               style={{
@@ -245,7 +223,7 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
                         marginTop: 2,
                       }}
                     >
-                      {fmt(profile.followers)} followers
+                      {formatFollowers(profile.followers)} followers
                     </div>
                   </div>
 

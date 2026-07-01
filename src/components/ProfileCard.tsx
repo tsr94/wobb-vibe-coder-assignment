@@ -4,30 +4,19 @@ import type { Platform, UserProfileSummary } from "@/types";
 import { Check, Plus, X } from "lucide-react";
 import { VerifiedBadge } from "./VerifiedBadge";
 import { useListStore } from "@/store/useListStore";
+import { StatBadge } from "./ui/StatBadge";
+import { formatFollowers, formatEngagementRate } from "@/utils/formatters";
 
 interface ProfileCardProps {
   profile: UserProfileSummary;
   platform: Platform;
   searchQuery: string;
-  onProfileClick?: (username: string) => void;
-}
-
-function formatFollowers(count: number) {
-  if (count >= 1_000_000) return (count / 1_000_000).toFixed(1) + "M";
-  if (count >= 1_000) return (count / 1_000).toFixed(0) + "K";
-  return count.toString();
-}
-
-function formatEngagement(rate: number | undefined) {
-  if (!rate) return null;
-  return (rate * 100).toFixed(2) + "%";
 }
 
 export function ProfileCard({
   profile,
   platform,
   searchQuery,
-  onProfileClick,
 }: ProfileCardProps) {
   const navigate = useNavigate();
   const { addProfile, removeProfile, isInList } = useListStore();
@@ -38,7 +27,6 @@ export function ProfileCard({
   const displayHandle = profile.username ?? profile.handle ?? profile.user_id;
 
   const handleClick = () => {
-    if (onProfileClick) onProfileClick(displayHandle);
     navigate(`/profile/${displayHandle}?platform=${platform}`);
   };
 
@@ -48,7 +36,7 @@ export function ProfileCard({
     else addProfile(profile);
   };
 
-  const engagementStr = formatEngagement(profile.engagement_rate);
+  const engagementStr = formatEngagementRate(profile.engagement_rate);
 
   return (
     <div
@@ -171,31 +159,9 @@ export function ProfileCard({
 
         {/* Stats chips */}
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: "var(--accent-bright)",
-              background: "var(--accent-dim)",
-              padding: "2px 10px",
-              borderRadius: 99,
-            }}
-          >
-            {formatFollowers(profile.followers)} followers
-          </span>
+          <StatBadge value={`${formatFollowers(profile.followers)} followers`} color="accent" />
           {engagementStr && (
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#34d399",
-                background: "rgba(52,211,153,0.1)",
-                padding: "2px 10px",
-                borderRadius: 99,
-              }}
-            >
-              {engagementStr} ER
-            </span>
+            <StatBadge value={`${engagementStr} ER`} color="green" />
           )}
         </div>
       </div>

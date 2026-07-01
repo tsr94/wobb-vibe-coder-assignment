@@ -1,5 +1,11 @@
 export type Platform = "instagram" | "youtube" | "tiktok";
 
+export const PLATFORM_LABELS: Record<Platform, string> = {
+  instagram: "Instagram",
+  youtube: "YouTube",
+  tiktok: "TikTok",
+};
+
 export interface UserProfileSummary {
   user_id: string;
   username: string;
