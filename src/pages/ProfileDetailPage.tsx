@@ -5,6 +5,7 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import type { FullUserProfile, ProfileDetailResponse } from "@/types";
 import { loadProfileByUsername } from "@/utils/profileLoader";
 import { useListStore } from "@/store/useListStore";
+import { ArrowLeft, Check, Heart, X, ExternalLink } from "lucide-react";
 
 function fmt(count: number) {
   if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + "M";
@@ -139,7 +140,7 @@ export function ProfileDetailPage() {
               fontSize: 14,
             }}
           >
-            ← Back to search
+            <ArrowLeft size={14} style={{ display: "inline-block", marginRight: 4 }} /> Back to search
           </Link>
         </div>
       </Layout>
@@ -168,7 +169,7 @@ export function ProfileDetailPage() {
         onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--accent-bright)")}
         onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--text-muted)")}
       >
-        ← Back to search
+        <ArrowLeft size={15} /> Back to search
       </Link>
 
       {/* Profile hero card */}
@@ -215,11 +216,11 @@ export function ProfileDetailPage() {
                 justifyContent: "center",
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#fff",
+                color: "white",
                 border: "2px solid var(--bg-card)",
               }}
             >
-              ✓
+              <Check size={13} strokeWidth={3} />
             </span>
           )}
         </div>
@@ -303,6 +304,9 @@ export function ProfileDetailPage() {
                 transition: "all 0.2s ease",
                 fontFamily: "var(--font-sans)",
                 boxShadow: inList ? "none" : "var(--shadow-glow)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
@@ -311,7 +315,7 @@ export function ProfileDetailPage() {
                 (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
               }}
             >
-              {inList ? "✕ Remove from List" : "♡ Add to List"}
+              {inList ? <><X size={14} /> Remove from List</> : <><Heart size={14} /> Add to List</>}
             </button>
 
             {/* External link */}
@@ -343,7 +347,7 @@ export function ProfileDetailPage() {
                   (e.currentTarget as HTMLAnchorElement).style.color = "var(--text-secondary)";
                 }}
               >
-                View on {platform} →
+                View on {platform} <ExternalLink size={13} />
               </a>
             )}
           </div>

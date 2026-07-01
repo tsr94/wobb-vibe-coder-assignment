@@ -1,3 +1,5 @@
+import React from "react";
+import { Camera, Play, Music2, Search, X } from "lucide-react";
 import type { Platform } from "@/types";
 import { PLATFORMS, getPlatformLabel } from "@/utils/dataHelpers";
 
@@ -19,10 +21,10 @@ const PLATFORM_COLORS: Record<Platform, { color: string; bg: string; glow: strin
   },
 };
 
-const PLATFORM_ICONS: Record<Platform, string> = {
-  instagram: "📸",
-  youtube: "▶",
-  tiktok: "♪",
+const PLATFORM_ICONS: Record<Platform, React.ReactNode> = {
+  instagram: <Camera size={15} />,
+  youtube: <Play size={15} />,
+  tiktok: <Music2 size={15} />,
 };
 
 interface PlatformFilterProps {
@@ -112,16 +114,16 @@ export function PlatformFilter({
         <span
           style={{
             position: "absolute",
-            left: 18,
+            left: 16,
             top: "50%",
             transform: "translateY(-50%)",
             color: "var(--text-muted)",
-            fontSize: 18,
             pointerEvents: "none",
-            lineHeight: 1,
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          ⌕
+          <Search size={17} />
         </span>
         <input
           id="influencer-search-input"
@@ -180,7 +182,7 @@ export function PlatformFilter({
             }}
             aria-label="Clear search"
           >
-            ×
+            <X size={14} />
           </button>
         )}
       </div>

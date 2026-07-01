@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Platform, UserProfileSummary } from "@/types";
+import { Check, Plus, X } from "lucide-react";
 import { VerifiedBadge } from "./VerifiedBadge";
 import { useListStore } from "@/store/useListStore";
 
@@ -121,9 +122,10 @@ export function ProfileCard({
               justifyContent: "center",
               fontSize: 10,
               border: "2px solid var(--bg-card)",
+              color: "white",
             }}
           >
-            ✓
+            <Check size={10} strokeWidth={3} />
           </span>
         )}
       </div>
@@ -224,9 +226,16 @@ export function ProfileCard({
           transition: "all 0.18s ease",
           whiteSpace: "nowrap",
           fontFamily: "var(--font-sans)",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
         }}
       >
-        {added ? "✕ Remove" : "+ Add"}
+        {added ? (
+          <><X size={13} /> Remove</>
+        ) : (
+          <><Plus size={13} /> Add</>
+        )}
       </button>
     </div>
   );

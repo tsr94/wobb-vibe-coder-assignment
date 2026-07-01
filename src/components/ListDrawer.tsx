@@ -1,5 +1,6 @@
 import { useListStore } from "@/store/useListStore";
 import { useNavigate } from "react-router-dom";
+import { X, Heart } from "lucide-react";
 
 interface ListDrawerProps {
   open: boolean;
@@ -119,7 +120,7 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
               (e.currentTarget as HTMLButtonElement).style.color = "var(--text-secondary)";
             }}
           >
-            ×
+            <X size={16} />
           </button>
         </div>
 
@@ -139,7 +140,9 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
                 color: "var(--text-muted)",
               }}
             >
-              <div style={{ fontSize: 48, marginBottom: 16 }}>♡</div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 16, color: "var(--text-muted)" }}>
+                <Heart size={48} strokeWidth={1} />
+              </div>
               <p
                 style={{
                   fontSize: 15,
@@ -279,7 +282,7 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
                       (e.currentTarget as HTMLButtonElement).style.color = "var(--text-muted)";
                     }}
                   >
-                    ×
+                    <X size={14} />
                   </button>
                 </li>
               ))}

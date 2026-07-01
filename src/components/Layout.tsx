@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { Sparkles, Heart } from "lucide-react";
 import { ListDrawer } from "./ListDrawer";
 import { useListStore } from "@/store/useListStore";
 
@@ -57,11 +58,10 @@ export function Layout({ children, title }: LayoutProps) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 16,
                 boxShadow: "0 0 16px rgba(139,92,246,0.4)",
               }}
             >
-              ✦
+              <Sparkles size={16} color="#fff" />
             </span>
             <span
               style={{
@@ -107,7 +107,7 @@ export function Layout({ children, title }: LayoutProps) {
               (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
             }}
           >
-            <span style={{ fontSize: 15 }}>♡</span>
+            <Heart size={15} />
             My List
             {count > 0 && (
               <span
