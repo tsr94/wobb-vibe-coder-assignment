@@ -203,7 +203,7 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
                       transition: "border-color 0.15s",
                     }}
                     onClick={() => {
-                      navigate(`/profile/${profile.username}`);
+                      navigate(`/profile/${profile.username ?? profile.handle ?? profile.user_id}`);
                       onClose();
                     }}
                     onMouseEnter={(e) => {
@@ -222,7 +222,7 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      navigate(`/profile/${profile.username}`);
+                      navigate(`/profile/${profile.username ?? profile.handle ?? profile.user_id}`);
                       onClose();
                     }}
                   >
@@ -236,7 +236,7 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      @{profile.username}
+                      @{profile.username ?? profile.handle ?? profile.user_id}
                     </div>
                     <div
                       style={{

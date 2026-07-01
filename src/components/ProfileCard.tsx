@@ -34,10 +34,12 @@ export function ProfileCard({
   const added = isInList(profile.user_id);
   const [hovered, setHovered] = useState(false);
   const [btnHovered, setBtnHovered] = useState(false);
+  // Some YouTube profiles have no username, only a handle
+  const displayHandle = profile.username ?? profile.handle ?? profile.user_id;
 
   const handleClick = () => {
-    if (onProfileClick) onProfileClick(profile.username);
-    navigate(`/profile/${profile.username}?platform=${platform}`);
+    if (onProfileClick) onProfileClick(displayHandle);
+    navigate(`/profile/${displayHandle}?platform=${platform}`);
   };
 
   const handleListToggle = (e: React.MouseEvent) => {
@@ -150,7 +152,7 @@ export function ProfileCard({
               textOverflow: "ellipsis",
             }}
           >
-            @{profile.username}
+            @{displayHandle}
           </span>
           <VerifiedBadge verified={false} />
         </div>
