@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Camera, Play, Music2, Search, X } from "lucide-react";
 import type { Platform } from "@/types";
 import { PLATFORMS, getPlatformLabel } from "@/utils/dataHelpers";
@@ -41,9 +41,17 @@ export function PlatformFilter({
   onSearchChange,
 }: PlatformFilterProps) {
   const palette = PLATFORM_COLORS[selected];
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const scrollSearchIntoView = () => {
+    const el = containerRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 80; // 64px sticky header + 16px breathing room
+    window.scrollTo({ top, behavior: "smooth" });
+  };
 
   return (
-    <div style={{ marginBottom: 28 }}>
+    <div ref={containerRef} style={{ marginBottom: 28 }}>
       {/* Platform Tabs */}
       <div
         style={{
@@ -146,6 +154,7 @@ export function PlatformFilter({
             boxShadow: searchQuery ? `0 0 0 3px ${palette.glow}` : "none",
           }}
           onFocus={(e) => {
+            scrollSearchIntoView();
             (e.target as HTMLInputElement).style.borderColor = palette.color + "99";
             (e.target as HTMLInputElement).style.boxShadow = `0 0 0 3px ${palette.glow}`;
           }}
