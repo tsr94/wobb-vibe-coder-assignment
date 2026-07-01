@@ -118,7 +118,7 @@ export function ProfileDetailPage() {
             Could not load profile for @{username}
           </p>
           <Link
-            to="/"
+            to={`/?platform=${platform}`}
             style={{
               color: "var(--accent-bright)",
               fontWeight: 600,
@@ -138,7 +138,7 @@ export function ProfileDetailPage() {
     <Layout title={`@${user.username}`}>
       {/* Back link */}
       <Link
-        to="/"
+        to={`/?platform=${platform}`}
         style={{
           display: "inline-flex",
           alignItems: "center",
