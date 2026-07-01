@@ -3,6 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { X, Heart } from "lucide-react";
 import { EmptyState } from "./ui/EmptyState";
 import { formatFollowers } from "@/utils/formatters";
+import type { Platform } from "@/types";
+
+/** Per-platform pill style — background and text color */
+const PLATFORM_STYLES: Record<Platform, { bg: string; color: string; label: string }> = {
+  instagram: { bg: "rgba(225,48,108,0.12)",  color: "#e1306c",  label: "Instagram" },
+  youtube:   { bg: "rgba(255,0,0,0.10)",     color: "#ff4444",  label: "YouTube"   },
+  tiktok:    { bg: "rgba(105,201,208,0.12)", color: "#69c9d0",  label: "TikTok"   },
+};
 
 interface ListDrawerProps {
   open: boolean;
@@ -206,15 +214,46 @@ export function ListDrawer({ open, onClose }: ListDrawerProps) {
                   >
                     <div
                       style={{
-                        fontWeight: 600,
-                        fontSize: 14,
-                        color: "var(--text-primary)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
                         overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
                       }}
                     >
-                      @{profile.username ?? profile.handle ?? profile.user_id}
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          fontSize: 14,
+                          color: "var(--text-primary)",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          flexShrink: 1,
+                        }}
+                      >
+                        @{profile.username ?? profile.handle ?? profile.user_id}
+                      </span>
+                      {profile.platform && (() => {
+                        const ps = PLATFORM_STYLES[profile.platform];
+                        return (
+                          <span
+                            style={{
+                              flexShrink: 0,
+                              fontSize: 10,
+                              fontWeight: 700,
+                              letterSpacing: "0.04em",
+                              textTransform: "uppercase",
+                              padding: "1px 7px",
+                              borderRadius: 99,
+                              background: ps.bg,
+                              color: ps.color,
+                              border: `1px solid ${ps.color}30`,
+                            }}
+                          >
+                            {ps.label}
+                          </span>
+                        );
+                      })()}
                     </div>
                     <div
                       style={{

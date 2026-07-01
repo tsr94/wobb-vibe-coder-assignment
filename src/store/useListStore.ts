@@ -1,10 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { UserProfileSummary } from "@/types";
+import type { Platform, UserProfileSummary } from "@/types";
+
+/** A profile stored in the list, enriched with the platform it was added from. */
+export type ListProfile = UserProfileSummary & { platform: Platform };
 
 interface ListStore {
-  selectedProfiles: UserProfileSummary[];
-  addProfile: (profile: UserProfileSummary) => void;
+  selectedProfiles: ListProfile[];
+  addProfile: (profile: UserProfileSummary, platform: Platform) => void;
   removeProfile: (userId: string) => void;
   isInList: (userId: string) => boolean;
   clearList: () => void;
@@ -15,11 +18,11 @@ export const useListStore = create<ListStore>()(
     (set, get) => ({
       selectedProfiles: [],
 
-      addProfile: (profile) => {
+      addProfile: (profile, platform) => {
         const already = get().isInList(profile.user_id);
         if (already) return;
         set((state) => ({
-          selectedProfiles: [...state.selectedProfiles, profile],
+          selectedProfiles: [...state.selectedProfiles, { ...profile, platform }],
         }));
       },
 

@@ -33,7 +33,7 @@ export function ProfileCard({
   const handleListToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (added) removeProfile(profile.user_id);
-    else addProfile(profile);
+    else addProfile(profile, platform);
   };
 
   const engagementStr = formatEngagementRate(profile.engagement_rate);

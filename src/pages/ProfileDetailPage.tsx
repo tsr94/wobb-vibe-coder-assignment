@@ -1,6 +1,7 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import type { Platform } from "@/types";
 import { useListStore } from "@/store/useListStore";
 import { ArrowLeft, Check, Heart, X, ExternalLink } from "lucide-react";
 import { useProfileData } from "@/hooks/useProfileData";
@@ -60,7 +61,7 @@ function StatCard({ label, value, accent = "var(--accent-bright)" }: StatCardPro
 export function ProfileDetailPage() {
   const { username } = useParams<{ username: string }>();
   const [searchParams] = useSearchParams();
-  const platform = searchParams.get("platform") || "unknown";
+  const platform = (searchParams.get("platform") || "instagram") as Platform;
   const { profile: user, loading, notFound } = useProfileData(username);
   const { addProfile, removeProfile, isInList } = useListStore();
 
@@ -271,7 +272,7 @@ export function ProfileDetailPage() {
               id={`detail-add-to-list-${user.user_id}`}
               onClick={() => {
                 if (inList) removeProfile(user.user_id);
-                else addProfile(user as Parameters<typeof addProfile>[0]);
+                else addProfile(user, platform);
               }}
               style={{
                 padding: "10px 24px",
