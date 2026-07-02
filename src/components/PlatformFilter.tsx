@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Camera, Play, Music2, Search, X } from "lucide-react";
 import type { Platform } from "@/types";
 import { PLATFORMS, getPlatformLabel } from "@/utils/dataHelpers";
@@ -42,13 +42,35 @@ export function PlatformFilter({
 }: PlatformFilterProps) {
   const palette = PLATFORM_COLORS[selected];
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollSearchIntoView = () => {
     const el = containerRef.current;
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 80; // 64px sticky header + 16px breathing room
+    const top = el.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top, behavior: "smooth" });
   };
+
+  // Keyboard shortcuts: "/" focuses search, "Escape" clears it
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      const isTyping = tag === "INPUT" || tag === "TEXTAREA";
+
+      if (e.key === "/" && !isTyping) {
+        e.preventDefault();
+        inputRef.current?.focus();
+        scrollSearchIntoView();
+      }
+
+      if (e.key === "Escape" && isTyping) {
+        onSearchChange("");
+        inputRef.current?.blur();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onSearchChange]);
 
   return (
     <div ref={containerRef} style={{ marginBottom: 28 }}>
@@ -134,6 +156,7 @@ export function PlatformFilter({
           <Search size={17} />
         </span>
         <input
+          ref={inputRef}
           id="influencer-search-input"
           type="text"
           value={searchQuery}
@@ -141,7 +164,7 @@ export function PlatformFilter({
           placeholder={`Search ${getPlatformLabel(selected)} creators by name or handle…`}
           style={{
             width: "100%",
-            padding: "14px 18px 14px 48px",
+            padding: "14px 52px 14px 48px",
             background: "var(--bg-input)",
             border: "1px solid",
             borderColor: searchQuery ? palette.color + "66" : "var(--border)",
@@ -165,6 +188,28 @@ export function PlatformFilter({
             }
           }}
         />
+        {/* "/" shortcut hint — shown when idle */}
+        {!searchQuery && (
+          <kbd
+            style={{
+              position: "absolute",
+              right: 14,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border)",
+              borderRadius: 6,
+              padding: "2px 7px",
+              fontSize: 12,
+              fontFamily: "var(--font-sans)",
+              color: "var(--text-muted)",
+              pointerEvents: "none",
+              letterSpacing: 0,
+            }}
+          >
+            /
+          </kbd>
+        )}
         {/* Clear button */}
         {searchQuery && (
           <button

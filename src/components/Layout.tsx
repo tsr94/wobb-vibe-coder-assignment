@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Sparkles, Heart } from "lucide-react";
 import { ListDrawer } from "./ListDrawer";
 import { useListStore } from "@/store/useListStore";
+import { Toaster } from "sonner";
 
 interface LayoutProps {
   children: ReactNode;
@@ -176,6 +177,19 @@ export function Layout({ children, title }: LayoutProps) {
       </footer>
 
       <ListDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: "#1e2335",
+            border: "1px solid rgba(255,255,255,0.08)",
+            color: "#f0f2ff",
+            fontFamily: "var(--font-sans)",
+            fontSize: 14,
+          },
+        }}
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { useListStore } from "@/store/useListStore";
 import { ArrowLeft, Check, Heart, X, ExternalLink } from "lucide-react";
 import { useProfileData } from "@/hooks/useProfileData";
 import { formatCount } from "@/utils/formatters";
+import { toast } from "sonner";
 
 interface StatCardProps {
   label: string;
@@ -75,28 +76,69 @@ export function ProfileDetailPage() {
   }
 
   if (loading) {
+    // Skeleton that mirrors the actual profile layout
+    const Bone = ({ w, h, radius = 8 }: { w: string | number; h: number; radius?: number }) => (
+      <div
+        style={{
+          width: w,
+          height: h,
+          borderRadius: radius,
+          background: "linear-gradient(90deg, #1e2335 25%, #252a3d 50%, #1e2335 75%)",
+          backgroundSize: "200% 100%",
+          animation: "shimmer 1.4s ease infinite",
+        }}
+      />
+    );
     return (
       <Layout>
+        <style>{`@keyframes shimmer { from { background-position: 200% center; } to { background-position: -200% center; } }`}</style>
+        {/* Back link skeleton */}
+        <Bone w={120} h={16} />
+        {/* Hero card skeleton */}
         <div
           style={{
-            textAlign: "center",
-            padding: "120px 24px",
-            color: "var(--text-muted)",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-lg)",
+            padding: 32,
+            marginTop: 28,
+            marginBottom: 24,
+            display: "flex",
+            gap: 28,
+            alignItems: "flex-start",
           }}
         >
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              border: "3px solid var(--border)",
-              borderTopColor: "var(--accent)",
-              borderRadius: "50%",
-              animation: "spin 0.8s linear infinite",
-              margin: "0 auto 20px",
-            }}
-          />
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          <p>Loading @{username}…</p>
+          <Bone w={100} h={100} radius={50} />
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
+            <Bone w="40%" h={28} />
+            <Bone w="25%" h={16} />
+            <Bone w="70%" h={14} />
+            <Bone w="70%" h={14} />
+            <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
+              <Bone w={140} h={40} radius={99} />
+              <Bone w={130} h={40} radius={99} />
+            </div>
+          </div>
+        </div>
+        {/* Stats grid skeleton */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12 }}>
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius-md)",
+                padding: "16px 20px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <Bone w="50%" h={10} />
+              <Bone w="70%" h={22} />
+            </div>
+          ))}
         </div>
       </Layout>
     );
@@ -271,8 +313,13 @@ export function ProfileDetailPage() {
             <button
               id={`detail-add-to-list-${user.user_id}`}
               onClick={() => {
-                if (inList) removeProfile(user.user_id);
-                else addProfile(user, platform);
+                if (inList) {
+                  removeProfile(user.user_id);
+                  toast(`Removed @${user.username ?? username}`, { icon: "✕", duration: 2500 });
+                } else {
+                  addProfile(user, platform);
+                  toast.success(`@${user.username ?? username} added to your list`, { duration: 2500 });
+                }
               }}
               style={{
                 padding: "10px 24px",

@@ -6,6 +6,7 @@ import { VerifiedBadge } from "./VerifiedBadge";
 import { useListStore } from "@/store/useListStore";
 import { StatBadge } from "./ui/StatBadge";
 import { formatFollowers, formatEngagementRate } from "@/utils/formatters";
+import { toast } from "sonner";
 
 interface ProfileCardProps {
   profile: UserProfileSummary;
@@ -32,8 +33,17 @@ export function ProfileCard({
 
   const handleListToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (added) removeProfile(profile.user_id);
-    else addProfile(profile, platform);
+    if (added) {
+      removeProfile(profile.user_id);
+      toast(`Removed @${displayHandle}`, {
+        duration: 2500,
+      });
+    } else {
+      addProfile(profile, platform);
+      toast.success(`@${displayHandle} added to your list`, {
+        duration: 2500,
+      });
+    }
   };
 
   const engagementStr = formatEngagementRate(profile.engagement_rate);
