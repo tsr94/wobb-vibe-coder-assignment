@@ -1,6 +1,6 @@
 # Wobb Frontend Assignment — Submission
 
-> **Candidate:** Tilakraj Singh Rawat  
+> **Candidate:** Tilakraj Singh Ranawat  
 > **Repo:** https://github.com/tsr94/wobb-vibe-coder-assignment  
 > **Live Demo:** https://tsr94.github.io/wobb-vibe-coder-assignment/  
 > **Stack:** React 19 · TypeScript · Vite · Zustand · Framer Motion · Sonner · Lucide · React Router v7
@@ -32,9 +32,7 @@ Open [http://localhost:5173](http://localhost:5173)
 | ProfileDetailPage engagement rate | Corrected engagement rate multiplier from 10000 to 100 |
 | ProfileDetailPage engagements count | Show raw engagements count in stat card, not the rate string |
 | ProfileDetailPage imports | Removed unused formatEngagementRate import |
-| profileLoader glob typing | Corrected import.meta.glob generic type to {default: ProfileDetailResponse} |
-| profileLoader logic | Simplified loader logic now that glob type is properly typed |
-| tsconfig deprecation error | Removed redundant baseUrl/paths from root config causing TS6 deprecation error |
+
 
 ---
 
@@ -81,7 +79,7 @@ Replaced all ad-hoc state with a single persisted Zustand store (`useListStore`)
 ### ⚡ UX Improvements
 | Feature | Detail |
 |---|---|
-| **Toast notifications** | `sonner` — feedback on every add/remove action with a dismissible close button |
+| **Toast notifications** | `sonner` — feedback on every add/remove action  |
 | **Shimmer skeleton** | Profile detail page shows a layout-accurate skeleton while loading instead of a bare spinner |
 | **Animated list** | `framer-motion` `AnimatePresence` — cards slide-in with stagger on mount, fade-scale out when filtered away |
 | **Keyboard shortcuts** | Press `/` to focus search (scrolls it into view below the sticky header); press `Escape` to clear |
