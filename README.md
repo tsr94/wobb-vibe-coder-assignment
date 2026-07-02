@@ -2,6 +2,7 @@
 
 > **Candidate:** Tilakraj Singh Rawat  
 > **Repo:** https://github.com/tsr94/wobb-vibe-coder-assignment  
+> **Live Demo:** https://tsr94.github.io/wobb-vibe-coder-assignment/  
 > **Stack:** React 19 · TypeScript · Vite · Zustand · Framer Motion · Sonner · Lucide · React Router v7
 
 ---
@@ -25,6 +26,15 @@ Open [http://localhost:5173](http://localhost:5173)
 | YouTube search crash | Profiles missing `username` fell back to `handle ?? user_id` for navigation — previously caused a blank/broken route |
 | Broken profile images | Static CDN links were dead; replaced with working proxy URLs |
 | Platform not preserved on back-navigation | "Back to search" always landed on Instagram; now carries `?platform=` so the correct tab is restored |
+| dataHelpers username search | Made username search case-insensitive to match fullname behavior |
+| SearchPage stale closure | Used functional setState to avoid stale closure in click counter |
+| ProfileCard width | Replaced hard-coded w-[700px] with responsive w-full max-w-2xl |
+| ProfileDetailPage engagement rate | Corrected engagement rate multiplier from 10000 to 100 |
+| ProfileDetailPage engagements count | Show raw engagements count in stat card, not the rate string |
+| ProfileDetailPage imports | Removed unused formatEngagementRate import |
+| profileLoader glob typing | Corrected import.meta.glob generic type to {default: ProfileDetailResponse} |
+| profileLoader logic | Simplified loader logic now that glob type is properly typed |
+| tsconfig deprecation error | Removed redundant baseUrl/paths from root config causing TS6 deprecation error |
 
 ---
 
@@ -90,60 +100,3 @@ Replaced all ad-hoc state with a single persisted Zustand store (`useListStore`)
 | `sonner` | latest | Lightest (~3 KB) toast library; dark-mode ready, `closeButton` support |
 | `framer-motion` | latest | `AnimatePresence` for list exit animations; `layout` prop for smooth reflow |
 
----
-
-## Assumptions Made
-
-1. **Static data is the source of truth.** No API calls; all profile data is in `src/assets/data/`. Vite's `import.meta.glob` lazy-loads individual profile JSONs on demand.
-
-2. **Cross-platform duplicates are intentional UX.** MrBeast being addable from both YouTube and TikTok makes sense — a brand manager may want to run campaigns on both. Deduplication is per `user_id` (platform-scoped), not per human identity.
-
-3. **"Optimization" scoped to architecture, not micro-benchmarks.** I audited re-render patterns and identified that `React.memo` on `ProfileCard` would be the biggest win, but since the list is small (≤ 10 profiles per platform in the dataset) the observable impact is negligible. I left the components un-memoized and clean rather than adding premature complexity.
-
-4. **No authentication layer needed** — the assignment is a discovery UI, not a full product.
-
----
-
-## Trade-offs
-
-| Decision | Alternative | Why I chose this |
-|---|---|---|
-| Inline `style` props over CSS modules | CSS modules / styled-components | Keeps everything co-located and avoids class-name collisions in a small app; design tokens ensure consistency |
-| `framer-motion` over CSS transitions for list | Pure CSS `@keyframes` | AnimatePresence handles mount *and* unmount which CSS can't do without JS anyway |
-| `sonner` over `react-hot-toast` | react-hot-toast | Smaller bundle, ships with `closeButton` API, better dark-mode defaults |
-| Persist to `localStorage` | Session storage / no persistence | Better for a "My List" mental model — the user expects their saved profiles to survive a tab refresh |
-| URL as platform state (`?platform=`) | React state only | Enables back/forward navigation and deep-linking to a specific platform |
-
----
-
-## Remaining Improvements
-
-Given more time I would:
-
-1. **`React.memo` + granular Zustand selectors on `ProfileCard`** — eliminates all list re-renders when typing (profiling would confirm whether this matters at real data scales)
-2. **Stale-fetch cancellation in `useProfileData`** — an AbortController / `isCancelled` flag to prevent race conditions when navigating quickly between profiles
-3. **Virtualized list** (`react-virtual`) — for datasets with hundreds of profiles the DOM would get heavy; windowing would fix it
-4. **Test suite** — unit tests for `formatters.ts`, `filterProfiles`, `useListStore`, and at least a smoke test for the `SearchPage` render
-5. **Empty-state illustration** — replace the emoji fallbacks with a proper SVG illustration
-6. **Toast deduplication** — if a user spam-clicks Add, multiple toasts stack up; Sonner supports toast IDs to prevent this (`toast.success(..., { id: userId })`)
-7. **Deployed URL** — would add Vercel deployment given more time
-
----
-
-## Commit History (summary)
-
-```
-2149266  feat: UX improvements — toasts, skeleton, animations, keyboard shortcuts
-3cfb6d2  chore: ignore pdf files
-20cc690  feat: scroll search bar into view on focus
-55350c8  fix: back to search preserves active platform tab
-897bcbb  feat: show platform badge in ListDrawer for cross-platform entries
-aadd642  refactor: code quality improvements
-bd4a061  fix: crash on search for YouTube profiles missing username field
-ecb8397  feat: add lucide-react icons across all components
-75a8550  chore: fix profile images
-cb86607  feat(ui): complete dark-theme redesign
-acbbdd3  feat: implement Add to List with Zustand store and slide-out drawer
-358135d  fix: resolve all identified bugs and quality issues
-ca551c7  Add Zustand for shared state management
-```
